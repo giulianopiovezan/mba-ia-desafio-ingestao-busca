@@ -3,14 +3,11 @@ from dotenv import load_dotenv
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings
-from langchain_postgres import PGVector
+
+from utils import build_store, validate_required_envs
 
 load_dotenv()
-
-for k in ("OPENAI_API_KEY", "DATABASE_URL","PG_VECTOR_COLLECTION_NAME"):
-    if not os.getenv(k):
-        raise RuntimeError(f"Environment variable {k} is not set")
+validate_required_envs()
 
 PDF_PATH = os.getenv("PDF_PATH")
 CHUNK_SIZE = 1000
@@ -43,21 +40,6 @@ def enrich_documents(docs: list[Document]) -> list[Document]:
         for d in docs
     ]
 
-def build_store(model: str) -> PGVector:
-    """Get pgvector store configured"""
-    collection_name = os.getenv("PG_VECTOR_COLLECTION_NAME")
-    connection = os.getenv("DATABASE_URL")
-    embeddings = OpenAIEmbeddings(
-        model=model,
-    )
-
-    return PGVector(
-        embeddings=embeddings,
-        collection_name=collection_name,
-        connection=connection,
-        use_jsonb=True
-    )
-
 def save_documents(
     ids: list[str],
     docs: list[Document]
@@ -87,8 +69,6 @@ def ingest_pdf():
         ids=ids
     )
     
-
-
 
 if __name__ == "__main__":
     ingest_pdf()
