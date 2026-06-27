@@ -5,7 +5,6 @@ from search import search_prompt
 llm = ChatOpenAI(
     model="gpt-5-nano",
     temperature=0.1,
-    base_url="https://generative-ai-platform-development.ifoodcorp.com.br/api/v2",
   )
 
 

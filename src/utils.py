@@ -15,7 +15,6 @@ def build_store(model: str) -> PGVector:
     connection = os.getenv("DATABASE_URL")
     embeddings = OpenAIEmbeddings(
         model=model,
-        openai_api_base="https://generative-ai-platform-development.ifoodcorp.com.br/api/v2",
     )
 
     return PGVector(
